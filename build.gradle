@@ -1,0 +1,61 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'docker'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
+        classpath('se.transmode.gradle:gradle-docker:1.2')
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+//group = 'kiliano'
+
+jar {
+    baseName = 'lire-api-rest'
+    version =  '0.1.0'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile group: 'org.apache.lucene', name: 'lucene-core', version: '6.3.0'
+    compile group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: '6.3.0'
+    compile group: 'org.apache.lucene', name: 'lucene-queryparser', version: '6.3.0'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+    // https://mvnrepository.com/artifact/com.sangupta/jopensurf
+    compile group: 'com.sangupta', name: 'jopensurf', version: '1.0.0'
+    // https://mvnrepository.com/artifact/org.bytedeco.javacpp-presets/opencv
+    // compile group: 'org.bytedeco.javacpp-presets', name: 'opencv', version: '2.4.11-0.11'
+    compile fileTree(dir: 'lib', include: '*.jar')
+    // runtime fileTree(dir: 'lib', include: '*.jar')
+    compile("org.springframework.boot:spring-boot-starter-web")
+}
+
+task buildDocker(type: Docker, dependsOn: build) {
+    push = false
+    applicationName = jar.baseName
+    dockerfile = file('docker/Dockerfile')
+    doFirst {
+        copy {
+            from jar
+            into stageDir
+        }
+    }
+}
+
+task runTest(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'Launch.Test'
+}
