@@ -7,15 +7,14 @@ Launch the server
 
 Build a docker
 ```
-gradle build buildDocker
+./gradlew build buildDocker
 ```
 
 ## Index Image
 
 Endpoint :
 ```bash
-# nb default value is 10
-GET/POST http://localhost:8080/search?img=<path/to/img.jpg>&nb=3
+GET/POST http://localhost:8080/indeximg?img=<path/to/img.jpg>
 ```
 
 Result :
@@ -44,6 +43,7 @@ Result :
 
 Endpoint :
 ```bash
+# nb default value is 10
 GET/POST localhost:8080/search?img=<path/to/img.jpg>?n=3
 ```
 
